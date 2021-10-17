@@ -12,6 +12,7 @@ class Provider {
   }
 
   async create() {
+    this.validate()
     const result = await TableProvider.insert({
       company: this.company,
       email: this.email,
@@ -50,6 +51,23 @@ class Provider {
     }
 
     await TableProvider.update(this.id, dataToUpdate)
+  }
+
+  async delete() {
+    await TableProvider.getById(this.id)
+    await TableProvider.delete(this.id)
+  }
+
+  validate() {
+    const fields = ['company', 'email', 'category']
+
+    fields.forEach(field => {
+      const value = this[field] //'this' aqui se refere à instância, com isso nós pegamos o valor de forma dinâmica.
+
+      if (typeof value !== 'string' || value.length === 0) {
+        throw new Error(`O campo '${field}' é inválido.`)
+      }
+    })
   }
 }
 

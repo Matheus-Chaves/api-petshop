@@ -9,9 +9,7 @@ module.exports = {
   },
   async getById(id) {
     const found = await Model.findOne({
-      where: {
-        id: id
-      }
+      where: { id: id }
     })
 
     if (!found) {
@@ -23,6 +21,13 @@ module.exports = {
   async update(id, dataToUpdate) {
     return await Model.update(
       dataToUpdate,
+      {
+        where: { id: id }
+      }
+    )
+  },
+  async delete(id) {
+    return await Model.destroy(
       {
         where: { id: id }
       }
