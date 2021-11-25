@@ -1,8 +1,9 @@
 const Model = require('./ModelProvider')
+const NotFound = require('../../errors/NotFound')
 
 module.exports = {
   list() {
-    return Model.findAll()
+    return Model.findAll({ raw: true }) //O raw serve para fazer o Sequelize retornar o dado como um objeto javascript
   },
   insert(provider) {
     return Model.create(provider)
@@ -13,7 +14,7 @@ module.exports = {
     })
 
     if (!found) {
-      throw new Error('Fornecedor não encontrado!')
+      throw new NotFound()
     }
 
     return found

@@ -1,14 +1,16 @@
 const TableProvider = require('./TableProvider')
+const InvalidField = require('../../errors/InvalidField')
+const DataNotFound = require('../../errors/DataNotFound')
 
 class Provider {
   constructor({ id, company, email, category, createdAt, updatedAt, version }) {
     this.id = id,
-      this.company = company,
-      this.email = email,
-      this.category = category,
-      this.createdAt = createdAt,
-      this.updatedAt = updatedAt,
-      this.version = version
+    this.company = company,
+    this.email = email,
+    this.category = category,
+    this.createdAt = createdAt,
+    this.updatedAt = updatedAt,
+    this.version = version
   }
 
   async create() {
@@ -47,7 +49,7 @@ class Provider {
     })
 
     if (Object.keys(dataToUpdate).length === 0) {
-      throw new Error('Não foram fornecidos dados para atualizar.')
+      throw new DataNotFound()
     }
 
     await TableProvider.update(this.id, dataToUpdate)
@@ -65,7 +67,7 @@ class Provider {
       const value = this[field] //'this' aqui se refere à instância, com isso nós pegamos o valor de forma dinâmica.
 
       if (typeof value !== 'string' || value.length === 0) {
-        throw new Error(`O campo '${field}' é inválido.`)
+        throw new InvalidField(field)
       }
     })
   }
