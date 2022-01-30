@@ -19,4 +19,20 @@ module.exports = {
       },
     });
   },
+
+  async getById(idProduct, idProvider) {
+    const found = await Model.findOne({
+      where: {
+        id: idProduct,
+        provider: idProvider,
+      },
+      raw: true, //Faz com que o retorno seja em js, não uma instância do sequelize
+    });
+
+    if (!found) {
+      throw new Error("O produto não foi encontrado!");
+    }
+
+    return found;
+  },
 };

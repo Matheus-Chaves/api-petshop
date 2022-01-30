@@ -31,4 +31,21 @@ router.delete("/:id", async (request, response) => {
   response.status(204).end();
 });
 
+router.get("/:id", async (request, response, next) => {
+  const data = {
+    id: request.params.id,
+    provider: request.provider.id,
+  };
+
+  const product = new Product(data);
+  await product
+    .load()
+    .then(() => {
+      response.send(JSON.stringify(product));
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 module.exports = router;

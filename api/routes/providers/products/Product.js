@@ -49,6 +49,16 @@ class Product {
   async delete() {
     await Table.delete(this.id, this.provider);
   }
+
+  async load() {
+    const product = await Table.getById(this.id, this.provider);
+    this.title = product.title;
+    this.price = product.price;
+    this.stock = product.stock;
+    this.createdAt = product.createdAt;
+    this.updatedAt = product.updatedAt;
+    this.version = product.version;
+  }
 }
 
 module.exports = Product;
