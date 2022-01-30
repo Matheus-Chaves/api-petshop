@@ -87,6 +87,10 @@ class Product {
       dataToUpdate
     );
   }
+
+  decreaseStock() {
+    return Table.subtract(this.id, this.provider, "stock", this.stock);
+  }
 }
 
 module.exports = Product;

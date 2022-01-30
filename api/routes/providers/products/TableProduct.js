@@ -1,4 +1,5 @@
 const Model = require("./ModelProduct");
+const instance = require("../../../database");
 
 module.exports = {
   list(idProvider) {
@@ -41,6 +42,21 @@ module.exports = {
   update(productData, dataToUpdate) {
     return Model.update(dataToUpdate, {
       where: productData,
+    });
+  },
+  subtract(idProduct, idProvider, field, quantity) {
+    return instance.transaction(async (transaction) => {
+      const product = await Model.findOne({
+        where: {
+          id: idProduct,
+          provider: idProvider,
+        },
+      });
+
+      product[field] = quantity;
+
+      await product.save();
+      return product;
     });
   },
 };
