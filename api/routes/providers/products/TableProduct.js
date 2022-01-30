@@ -6,6 +6,7 @@ module.exports = {
       where: {
         provider: idProvider,
       },
+      raw: true,
     });
   },
   insert(data) {

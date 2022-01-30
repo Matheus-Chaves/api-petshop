@@ -1,89 +1,90 @@
-const UnsupportedValue = require('./errors/UnsupportedValue')
-const jsontoxml = require('jsontoxml')
+const UnsupportedValue = require("./errors/UnsupportedValue");
+const jsontoxml = require("jsontoxml");
 
 class Serializer {
-  json (data) {
-    return JSON.stringify(data)
+  json(data) {
+    return JSON.stringify(data);
   }
 
-  xml (data) {
-    let tag = this.singularTag
+  xml(data) {
+    let tag = this.singularTag;
 
     if (Array.isArray(data)) {
-      tag = this.pluralTag
+      tag = this.pluralTag;
       data = data.map((item) => {
         return {
-          [this.singularTag]: item
-        }
-      })
+          [this.singularTag]: item,
+        };
+      });
     }
-    return jsontoxml({ [tag]: data })
+    return jsontoxml({ [tag]: data });
   }
 
-  serialize (data) {
-    data = this.filter(data)
-    if (this.contentType === 'application/json') {
-      return this.json(data)
+  serialize(data) {
+    data = this.filter(data);
+    if (this.contentType === "application/json") {
+      return this.json(data);
     }
 
-    if (this.contentType === 'application/xml') {
-      return this.xml(data)
+    if (this.contentType === "application/xml") {
+      return this.xml(data);
     }
 
-    throw new UnsupportedValue(this.contentType)
+    throw new UnsupportedValue(this.contentType);
   }
 
-  filterObject (data) {
-    const newObject = {}
+  filterObject(data) {
+    const newObject = {};
 
-    this.publicFields.forEach( (field) => {
+    this.publicFields.forEach((field) => {
       if (data.hasOwnProperty(field)) {
-        newObject[field] = data[field]
+        newObject[field] = data[field];
       }
-    })
+    });
 
-    return newObject
+    return newObject;
   }
 
-  filter (data) {
+  filter(data) {
     if (Array.isArray(data)) {
-      data = data.map(item => {
-        return this.filterObject(item)
-      })
+      data = data.map((item) => {
+        return this.filterObject(item);
+      });
     } else {
-      data = this.filterObject(data)
+      data = this.filterObject(data);
     }
 
-    return data
+    return data;
   }
 }
 
 class SerializerProvider extends Serializer {
-  constructor(contentType, extraFields = '') {
-    super()
-    this.contentType = contentType
-    this.publicFields = [
-      'id',
-      'company',
-      'category',
-      ...extraFields
-    ]
-    this.singularTag = 'provider'
-    this.pluralTag = 'providers'
+  constructor(contentType, extraFields = "") {
+    super();
+    this.contentType = contentType;
+    this.publicFields = ["id", "company", "category", ...extraFields];
+    this.singularTag = "provider";
+    this.pluralTag = "providers";
+  }
+}
+
+class SerializerProduct extends Serializer {
+  constructor(contentType, extraFields = "") {
+    super();
+    this.contentType = contentType;
+    this.publicFields = ["id", "title", ...extraFields];
+    this.singularTag = "product";
+    this.pluralTag = "products";
   }
 }
 
 class SerializerError extends Serializer {
-  constructor (contentType, extraFields = '') {
-    super()
-    this.contentType = contentType
-    this.publicFields = [
-      'id',
-      'message',
-      ...extraFields
-    ]
-    this.singularTag = 'error'
-    this.pluralTag = 'errors'
+  constructor(contentType, extraFields = "") {
+    super();
+    this.contentType = contentType;
+    this.publicFields = ["id", "message", ...extraFields];
+    this.singularTag = "error";
+    this.pluralTag = "errors";
   }
 }
 
@@ -91,5 +92,6 @@ module.exports = {
   Serializer,
   SerializerProvider,
   SerializerError,
-  acceptedFormats: ['application/json', 'application/xml'] //Foi definido dessa forma pq assim é possível facilitar quando formos aceitar outros formatos
-}
+  SerializerProduct,
+  acceptedFormats: ["application/json", "application/xml"], //Foi definido dessa forma pq assim é possível facilitar quando formos aceitar outros formatos
+};

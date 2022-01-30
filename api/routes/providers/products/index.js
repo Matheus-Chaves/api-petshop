@@ -1,10 +1,12 @@
 const router = require("express").Router({ mergeParams: true });
 const Table = require("./TableProduct");
 const Product = require("./Product");
+const Serializer = require("../../../Serializer").SerializerProduct;
 
 router.get("/", async (request, response) => {
   const products = await Table.list(request.provider.id);
-  response.send(JSON.stringify(products));
+  const serializer = new Serializer(response.getHeader("Content-Type"));
+  response.send(serializer.serialize(products));
 });
 
 router.post("/", async (request, response, next) => {
@@ -14,7 +16,8 @@ router.post("/", async (request, response, next) => {
     const data = { ...body, provider: idProvider };
     const product = new Product(data);
     await product.create();
-    response.status(201).send(product);
+    const serializer = new Serializer(response.getHeader("Content-Type"));
+    response.status(201).send(serializer.serialize(product));
   } catch (err) {
     next(err);
   }
@@ -41,7 +44,15 @@ router.get("/:id", async (request, response, next) => {
   await product
     .load()
     .then(() => {
-      response.send(JSON.stringify(product));
+      const serializer = new Serializer(response.getHeader("Content-Type"), [
+        "price",
+        "stock",
+        "provider",
+        "createdAt",
+        "updatedAt",
+        "version",
+      ]);
+      response.send(serializer.serialize(product));
     })
     .catch((err) => {
       next(err);
