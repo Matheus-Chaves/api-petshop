@@ -59,6 +59,34 @@ class Product {
     this.updatedAt = product.updatedAt;
     this.version = product.version;
   }
+
+  async update() {
+    const dataToUpdate = {};
+
+    if (typeof this.title === "string" && this.title.length > 0) {
+      dataToUpdate.title = this.title;
+    }
+
+    if (typeof this.price === "number" && this.price > 0) {
+      dataToUpdate.price = this.price;
+    }
+
+    if (typeof this.stock === "number") {
+      dataToUpdate.stock = this.stock;
+    }
+
+    if (Object.keys(dataToUpdate).length === 0) {
+      throw new Error("Não foram fornecidos dados para atualizar.");
+    }
+
+    return Table.update(
+      {
+        id: this.id,
+        provider: this.provider,
+      },
+      dataToUpdate
+    );
+  }
 }
 
 module.exports = Product;

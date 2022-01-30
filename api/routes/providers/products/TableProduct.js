@@ -9,9 +9,11 @@ module.exports = {
       raw: true,
     });
   },
+
   insert(data) {
     return Model.create(data);
   },
+
   delete(idProduct, idProvider) {
     return Model.destroy({
       where: {
@@ -35,5 +37,10 @@ module.exports = {
     }
 
     return found;
+  },
+  update(productData, dataToUpdate) {
+    return Model.update(dataToUpdate, {
+      where: productData,
+    });
   },
 };

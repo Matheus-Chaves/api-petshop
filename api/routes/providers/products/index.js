@@ -59,4 +59,20 @@ router.get("/:id", async (request, response, next) => {
     });
 });
 
+router.put("/:id", async (request, response, next) => {
+  const data = {
+    ...request.body,
+    id: request.params.id,
+    provider: request.provider.id,
+  };
+
+  try {
+    const product = new Product(data);
+    await product.update();
+    response.status(204).end();
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
