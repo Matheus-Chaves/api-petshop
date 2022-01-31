@@ -1,5 +1,6 @@
 const Model = require("./ModelProduct");
 const instance = require("../../../database");
+const NotFound = require("../../../errors/NotFound");
 
 module.exports = {
   list(idProvider) {
@@ -34,7 +35,7 @@ module.exports = {
     });
 
     if (!found) {
-      throw new Error("O produto não foi encontrado!");
+      throw new NotFound("Produto");
     }
 
     return found;

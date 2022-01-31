@@ -1,5 +1,6 @@
 const Table = require("./TableProduct");
-
+const DataNotFound = require("../../../errors/DataNotFound");
+const InvalidField = require("../../../errors/InvalidField");
 class Product {
   constructor({
     id,
@@ -23,11 +24,11 @@ class Product {
 
   validate() {
     if (typeof this.title !== "string" || this.title.length === 0) {
-      throw new Error("O campo 'title' está inválido.");
+      throw new InvalidField("title");
     }
 
     if (typeof this.price !== "number" || this.price.length === 0) {
-      throw new Error("O campo 'price' está inválido.");
+      throw new InvalidField("price");
     }
   }
 
@@ -76,7 +77,7 @@ class Product {
     }
 
     if (Object.keys(dataToUpdate).length === 0) {
-      throw new Error("Não foram fornecidos dados para atualizar.");
+      throw new DataNotFound();
     }
 
     return Table.update(

@@ -69,6 +69,26 @@ router.get("/:id", async (request, response, next) => {
     });
 });
 
+router.head("/:id", async (request, response, next) => {
+  const data = {
+    id: request.params.id,
+    provider: request.provider.id,
+  };
+
+  const product = new Product(data);
+  await product
+    .load()
+    .then(() => {
+      response.set("ETag", product.version);
+      const timestamp = new Date(product.updatedAt).getTime();
+      response.set("Last-Modified", timestamp);
+      response.status(200).end();
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 router.put("/:id", async (request, response, next) => {
   const data = {
     ...request.body,
