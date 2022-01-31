@@ -17,6 +17,13 @@ router.post("/", async (request, response, next) => {
     const product = new Product(data);
     await product.create();
     const serializer = new Serializer(response.getHeader("Content-Type"));
+    response.set("ETag", product.version);
+    const timestamp = new Date(product.updatedAt).getTime();
+    response.set("Last-Modified", timestamp);
+    response.set(
+      "Location",
+      `/api/providers/${product.provider}/products/${product.id}`
+    );
     response.status(201).send(serializer.serialize(product));
   } catch (err) {
     next(err);
@@ -52,6 +59,9 @@ router.get("/:id", async (request, response, next) => {
         "updatedAt",
         "version",
       ]);
+      response.set("ETag", product.version);
+      const timestamp = new Date(product.updatedAt).getTime();
+      response.set("Last-Modified", timestamp);
       response.send(serializer.serialize(product));
     })
     .catch((err) => {
@@ -69,6 +79,10 @@ router.put("/:id", async (request, response, next) => {
   try {
     const product = new Product(data);
     await product.update();
+    await product.load(); //com isso os dados serão atualizados dentro do objeto 'product'
+    response.set("ETag", product.version);
+    const timestamp = new Date(product.updatedAt).getTime();
+    response.set("Last-Modified", timestamp);
     response.status(204).end();
   } catch (err) {
     next(err);
@@ -85,6 +99,10 @@ router.post("/:id/decrease-stock", async (request, response, next) => {
     await product.load();
     product.stock = product.stock - request.body.quantity;
     await product.decreaseStock();
+    await product.load(); //com isso os dados serão atualizados dentro do objeto 'product'
+    response.set("ETag", product.version);
+    const timestamp = new Date(product.updatedAt).getTime();
+    response.set("Last-Modified", timestamp);
     response.status(204).end();
   } catch (err) {
     next(err);
