@@ -21,6 +21,7 @@ app.use((request, response, next) => {
 
   if (acceptedFormats.includes(requestedFormat)) {
     response.setHeader("Content-Type", requestedFormat);
+    response.set("X-Powered-By", "Gatito Petshop"); //Colocando Gatito no lugar de "X-Powered-By: Express"
     next();
   } else {
     response.status(406).end();
