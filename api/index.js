@@ -36,6 +36,9 @@ app.use((request, response, next) => {
 const router = require("./routes/providers/index");
 app.use("/api/providers", router);
 
+const routerV2 = require("./routes/providers/routes.v2");
+app.use("/api/v2/providers", routerV2);
+
 app.use((err, request, response, next) => {
   //Cria um middleware, função que pode ser acessada pelas rotas
   let status = 500; //Numero de erro padrão

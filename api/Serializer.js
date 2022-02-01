@@ -62,7 +62,7 @@ class SerializerProvider extends Serializer {
   constructor(contentType, extraFields = "") {
     super();
     this.contentType = contentType;
-    this.publicFields = ["id", "company", "category", ...extraFields];
+    this.publicFields = ["id", /*"company",*/ "category", ...extraFields];
     this.singularTag = "provider";
     this.pluralTag = "providers";
   }

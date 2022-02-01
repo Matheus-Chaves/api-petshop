@@ -12,7 +12,8 @@ router.options("/", (request, response) => {
 router.get("/", async (request, response) => {
   await TableProvider.list().then((results) => {
     const serializer = new SerializerProvider(
-      response.getHeader("Content-Type") //pegando o tipo de conteúdo do cabeçalho (definido no middleware na raiz da api)
+      response.getHeader("Content-Type"), //pegando o tipo de conteúdo do cabeçalho (definido no middleware na raiz da api)
+      ["company"]
     );
     response.status(200).send(
       //não necessário utilizar status 200, pois, por padrão, ja retorna 200
@@ -28,7 +29,8 @@ router.post("/", async (request, response, next) => {
     .create()
     .then(() => {
       const serializer = new SerializerProvider(
-        response.getHeader("Content-Type")
+        response.getHeader("Content-Type"),
+        ["company"]
       );
       response.status(201).send(serializer.serialize(provider));
     })
@@ -51,7 +53,7 @@ router.get("/:idProvider", async (request, response, next) => {
     .then(() => {
       const serializer = new SerializerProvider(
         response.getHeader("Content-Type"),
-        ["email", "createdAt", "updatedAt", "version"]
+        ["email", "company", "createdAt", "updatedAt", "version"]
       );
       response.status(200).send(serializer.serialize(provider));
     })
