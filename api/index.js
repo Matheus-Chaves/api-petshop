@@ -28,6 +28,11 @@ app.use((request, response, next) => {
   }
 });
 
+app.use((request, response, next) => {
+  response.set("Access-Control-Allow-Origin", "*"); //Permite que a API seja acessada de qualquer navegador sem gerar o erro CORS
+  next();
+});
+
 const router = require("./routes/providers/index");
 app.use("/api/providers", router);
 

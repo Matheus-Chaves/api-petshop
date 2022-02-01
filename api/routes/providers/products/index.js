@@ -3,6 +3,12 @@ const Table = require("./TableProduct");
 const Product = require("./Product");
 const Serializer = require("../../../Serializer").SerializerProduct;
 
+router.options("/", (request, response) => {
+  response.set("Access-Control-Allow-Methods", "GET, POST");
+  response.set("Access-Control-Allow-Headers", "Content-Type");
+  response.status(204).end();
+});
+
 router.get("/", async (request, response) => {
   const products = await Table.list(request.provider.id);
   const serializer = new Serializer(response.getHeader("Content-Type"));
@@ -28,6 +34,12 @@ router.post("/", async (request, response, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.options("/:id", (request, response) => {
+  response.set("Access-Control-Allow-Methods", "DELETE, GET, HEAD, PUT");
+  response.set("Access-Control-Allow-Headers", "Content-Type");
+  response.status(204).end();
 });
 
 router.delete("/:id", async (request, response) => {
@@ -107,6 +119,12 @@ router.put("/:id", async (request, response, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.options("/:id/decrease-stock", (request, response) => {
+  response.set("Access-Control-Allow-Methods", "POST");
+  response.set("Access-Control-Allow-Headers", "Content-Type");
+  response.status(204).end();
 });
 
 router.post("/:id/decrease-stock", async (request, response, next) => {

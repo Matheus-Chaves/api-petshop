@@ -3,6 +3,12 @@ const TableProvider = require("./TableProvider");
 const Provider = require("./Provider");
 const SerializerProvider = require("../../Serializer").SerializerProvider;
 
+router.options("/", (request, response) => {
+  response.set("Access-Control-Allow-Methods", "GET, POST");
+  response.set("Access-Control-Allow-Headers", "Content-Type");
+  response.status(204).end();
+});
+
 router.get("/", async (request, response) => {
   await TableProvider.list().then((results) => {
     const serializer = new SerializerProvider(
@@ -29,6 +35,12 @@ router.post("/", async (request, response, next) => {
     .catch((err) => {
       next(err);
     });
+});
+
+router.options("/:idProvider", (request, response) => {
+  response.set("Access-Control-Allow-Methods", "GET, PUT, DELETE");
+  response.set("Access-Control-Allow-Headers", "Content-Type");
+  response.status(204).end();
 });
 
 router.get("/:idProvider", async (request, response, next) => {
